@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Hello, World</title>
+    <style type="text/css">
+        html{height:100%}
+        body{height:100%;margin:0px;padding:0px}
+        #container{height:100%}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=OqqPz3jGg3zPyxpLzk85jHU6j1Z16eE1">
+
+    </script>
+</head>
+
+<body>
+<div>
+   <input type="file" οnchange="upload(this)" />
+</div>
+<div id="container"></div>
+<script type="text/javascript">
+    var map = new BMap.Map("container");    // 创建地图实例
+    var x = 106.44785;
+    var y = 29.56712;
+    var point = new BMap.Point(x, y);    // 创建点坐标
+    map.centerAndZoom(point, 15);    // 初始化地图，设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true);
+    map.addControl(new BMap.NavigationControl());
+    map.addControl(new BMap.ScaleControl());
+    map.addControl(new BMap.OverviewMapControl());
+    map.addControl(new BMap.MapTypeControl());
+    map.setCurrentCity("重庆");
+
+    //var map = new BMap.Map("container");
+    //var point = new BMap.Point(116.404, 39.915);
+    //map.centerAndZoom(point, 15);
+    var marker = new BMap.Marker(point);        // 创建标注
+    map.addOverlay(marker);                     // 将标注添加到地图中
+
+
+    translateCallback = function (data){
+      if(data.status === 0) {
+        var marker_1 = new BMap.Marker(data.points[0]);
+        map.addOverlay(marker_1);
+        var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
+        marker_1.setLabel(label); //添加百度label
+        map.setCenter(data.points[0]);
+      }
+    }
+
+    var convertor = new BMap.Convertor();
+    var pointArr = [];
+    pointArr.push(point);
+    convertor.translate(pointArr, 1, 5, translateCallback);
+
+
+    //前端读取本地文件的内容   下面代码中的this.result即为获取到的内容
+    function upload(input) {  //支持chrome IE10
+        if (window.FileReader) {
+            var file = input.files[0];
+            filename = file.name.split(".")[0];
+            var reader = new FileReader();
+            reader.onload = function() {
+                console.log(this.result)
+                alert(this.result);
+            }
+            reader.readAsText(file);
+        }
+        //支持IE 7 8 9 10
+        else if (typeof window.ActiveXObject != 'undefined'){
+            var xmlDoc;
+            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = false;
+            xmlDoc.load(input.value);
+            alert(xmlDoc.xml);
+        }
+        //支持FF
+        else if (document.implementation && document.implementation.createDocument) {
+            var xmlDoc;
+            xmlDoc = document.implementation.createDocument("", "", null);
+            xmlDoc.async = false;
+            xmlDoc.load(input.value);
+            alert(xmlDoc.xml);
+        } else {
+            alert('error');
+        }
+    }
+</script>
+</body>
+</html>
