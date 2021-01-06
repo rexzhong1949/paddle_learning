@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Hello, World</title>
+    <style type="text/css">
+        html{height:100%}
+        body{height:100%;margin:0px;padding:0px}
+        #container{height:100%}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=OqqPz3jGg3zPyxpLzk85jHU6j1Z16eE1">
+
+    </script>
+</head>
+
+<body>
+<div>
+    <button type="button" name="seach" onclick="FuncCSVImport()">CSV Import</button>
+    <input type="file" id="csvFileImport" onchange="readCSVFile(this)" />
+    #csvFileImport{
+        position: absolute;
+        right: 0px;
+        opacity: 0;
+    }
+</div>
+<div id="container"></div>
+<script type="text/javascript">
+
+     function csvToObject(csvString){
+        var csvarry = csvString.split("\r\n");
+        console.log(csvarry);
+        var datas = [];
+        var headers = csvarry[0].split(",");
+        console.log(headers);
+        for(var i = 1;i<csvarry.length;i++){
+            var data = {};
+            var temp = csvarry[i].split(",");
+                 for(var j = 0;j<temp.length;j++){
+                     data[headers[j]] = temp[j];
+                 }
+            datas.push(data);
+        }
+         return datas;
+    }
+
+     function FuncCSVImport() {
+         $("#csvFileImport").val("");
+         $("#csvFileImport").click();
+     }
+
+     function readCSVFile(obj) {
+         var reader = new FileReader();
+         reader.readAsText(obj.files[0]);
+
+         reader.onload = function () {
+               var data = csvToObject(this.result);
+
+               console.log(data.length);
+               for( var i=0; i<data.length; i++){
+                    //console.log(data[i]);//data为csv转换后的对象
+                    console.log("1");
+                }
+        }
+   }
+</script>
+</body>
+</html>
